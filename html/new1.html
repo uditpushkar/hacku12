@@ -1,0 +1,161 @@
+<?php
+$i=1;
+while ( $i <= 25){
+$abc[$i] = $_GET["Club$i"];
+if($abc[$i]==NULL){break;}
+$i=$i+1;
+}
+
+$numbernumber=$i;
+
+$xyz = $_GET["Date"];
+
+
+
+
+
+$sortby = $_SERVER['QUERY_STRING'];
+
+$set = '';
+if ($sortby == '') {
+	$header = 'First Name';
+	$sortby = 'firstname';
+	$set = 'y';
+}
+if ($sortby == 'surname') {
+	$header = 'Surname';
+	$set = 'y';
+}
+if ($sortby == 'city') {
+	$header = 'City';
+	$set = 'y';
+}
+if ($sortby == 'points') {
+	$header = 'Points';
+	$set = 'y';
+}
+if ($sortby == 'car') {
+	$header = 'Car';
+	$set = 'y';
+}
+if ($sortby == 'colour') {
+	$header = 'Colour';
+	$set = 'y';
+}
+if ($sortby == 'age') {
+	$header = 'Age';
+	$set = 'y';
+}
+
+?>
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+
+<title>Events In IITK</title>
+
+<style type="text/css">
+<!--
+body, th, td, p, small {
+	font-family:'Times New Roman',Times,serif;
+	font-size:100%;
+	color:#444;
+}
+small {font-size:100%;}
+table {
+	border:1px solid #ccf;
+	padding:3px;
+        margin-left:40px;
+}
+td, th {
+	background-color:#def;
+	padding:7px 20px 7px 20px;
+}
+th {background-color:#dee; color:#677;}
+
+h1 {font-size:120%; color:#558;}
+h1 .sortby {color:#855;}
+-->
+</style>
+
+</head>
+
+<body>
+
+
+
+
+
+<?php
+echo '<h1>              CURRENT  HAPPENINGS</h1>
+
+ <h1><p></p></h1>
+
+
+<table summary="List of demo fields">
+<tr>
+<th><a href=>CLUBS</a></th>
+<th><a href=>DESCRIPTION</a></th>
+<th><a href=>VENUE</a></th>
+<th><a href=>TIME</a></th>
+<th><a href=>DATE</a></th>
+';
+
+
+$fp = fopen("$xyz.txt",'r');
+if (!$fp) {echo 'ERROR: Unable to open file.</table></body></html>'; exit;}
+
+$row = 0;
+
+while (!feof($fp)) {
+	$row++;
+	$line = fgets($fp,1024); //use 2048 if very long lines
+	$field[$row] = explode('|', $line);
+	if ($sortby == 'club') {$sortkey = strtolower($field[$row][0]);} //club
+	if ($sortby == 'decrp') {$sortkey = strtolower($field[$row][1]);} //decrp
+	if ($sortby == 'venue') {$sortkey = strtolower($field[$row][2]);} //venue
+	if ($sortby == 'time') {$sortkey = $field[$row][3];} //time
+	if ($sortby == 'date') {$sortkey = strtolower($field[$row][4]);} //date
+	array_unshift($field[$row], $sortkey); //add sortkey to start of array
+}
+
+fclose($fp);
+
+sort($field);
+reset($field);
+
+$arrays = count($field) - 1;
+
+$i=1;
+while ($i <= $numbernumber)
+{
+$loop = 0;
+while ($loop < $arrays) {
+	
+
+	if($field[$loop][1]==$abc[$i])
+{	echo '
+<tr>
+<td>'.$field[$loop][1].'</td>
+<td>'.$field[$loop][2].'</td>
+<td>'.$field[$loop][3].'</td>
+<td>'.$field[$loop][4].'</td>
+<td>'.$field[$loop][5].'</td>
+</tr>';
+}
+$loop++;
+}
+$i=$i+1;
+}
+echo '
+</table>
+
+<p><small>25 AUGUST 2012 &middot; Last updated: '.date('j F Y', getlastmod()); ?> &middot; A <a href="http://www.FACEBOOK.COM"> PAGE</a> production &middot; <a href="http://www.twitter.com">All rights reserved</a> &middot; <a href="http://www.link.com">Copy cats will rot in hell</a></small></p>
+
+</body>
+</html>
